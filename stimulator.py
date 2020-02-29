@@ -8,6 +8,9 @@ class Stimulator(Frame):
     def __init__(self, master):
         super().__init__(master)
         self.master = master
+        self.master.geometry('500x300+500+200')
+
+    def fullscreen(self):
         self.master.attributes("-fullscreen", True)
         self.canvas = Canvas(self.master, bg='white')
         self.canvas.pack(fill = BOTH, expand = True)
@@ -15,12 +18,11 @@ class Stimulator(Frame):
         self.origin_x = int(self.canvas.winfo_width() / 2)
         self.origin_y = int(self.canvas.winfo_height() / 2)
 
-
     def stimulate(self, degree_min, degree_max, screen_height, chamber_height,
                     time_expand, time_hold, time_pause, repeat):
         degree_step = ((degree_max - degree_min) / time_expand) / FLAME_PER_SECOND
         related = (chamber_height * 2 / screen_height) * self.origin_y
-        self.canvas.delete("all")
+
         self.circle = self.canvas.create_oval(
                 self.origin_x - radius(degree_min, related),
                 self.origin_y - radius(degree_min, related),

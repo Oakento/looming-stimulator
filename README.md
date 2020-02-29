@@ -2,7 +2,7 @@
 
 Looming visual stimuli is used in behavioral research for neuroscience. This stimulator is based on two protocols<sup>[1](#1),[2](#2)</sup> and provide visual stimuli to animals. 
 
-####Usage:
+#### Usage:
 ```python
 # python3.6+
 python main.py
