@@ -1,11 +1,14 @@
 from tkinter import *
 from stimulator import Stimulator
+from threading import Thread
+
 
 class Panel(Frame):
     def __init__(self, master, stimulator):
         super().__init__(master)
         self.master = master
         self.stimulator = stimulator
+        self.thread = None
         self.master.wm_attributes('-topmost',1)
         self.master.geometry('300x240')
         ########
@@ -104,27 +107,26 @@ class Panel(Frame):
         self.master.destroy()
 
 
+    def stimulate_thread(self):
+        if self.thread and self.thread.isAlive():
+            return
+        stimulate = Thread(
+            target=self.stimulator.stimulate,
+            args=(self.get_degree_min(), self.get_degree_max(), self.get_chamber_height(),
+                self.get_time_expand(), self.get_time_hold(), self.get_time_pause(), self.get_repeat())
+        )
+        self.thread = stimulate
+        stimulate.start()
+
+
     def control(self):
         self.quit = Button(self.master, text="QUIT", padx=42, pady=10, command=self.close)
         self.quit.grid(row=8, column=0)
 
-        self.edit = Button(
-            self.master, text="EDIT", padx=64, pady=10, command=self.edit_args
-        )
+        self.edit = Button(self.master, text="EDIT", padx=64, pady=10, command=self.edit_args)
         self.edit.grid(row=8, column=1)
 
-        self.stimulate = Button(
-            self.master, text="STIMULATE", padx=104, pady=10,
-            command=lambda: self.stimulator.stimulate(
-                self.get_degree_min(),
-                self.get_degree_max(),
-                self.get_chamber_height(),
-                self.get_time_expand(),
-                self.get_time_hold(),
-                self.get_time_pause(),
-                self.get_repeat()
-            )
-        )
+        self.stimulate = Button(self.master, text="STIMULATE", padx=104, pady=10, command=self.stimulate_thread)
         self.stimulate.grid(row=9, column=0, columnspan=2)
 
         
