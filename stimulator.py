@@ -1,28 +1,27 @@
 from tkinter import *
 from utils import degree_to_radius as radius
+from utils import get_screen_height, get_geometry
 import time
 
-FLAME_PER_SECOND = 60
 
 class Stimulator(Frame):
     def __init__(self, master):
         super().__init__(master)
         self.master = master
-        self.master.geometry('500x300+500+200')
-
-    def fullscreen(self):
-        self.master.attributes("-fullscreen", True)
+        self.master.overrideredirect(1)
+        self.master.geometry(get_geometry())
         self.canvas = Canvas(self.master, bg='white')
         self.canvas.pack(fill = BOTH, expand = True)
         self.canvas.update()
         self.origin_x = int(self.canvas.winfo_width() / 2)
         self.origin_y = int(self.canvas.winfo_height() / 2)
 
-    def stimulate(self, degree_min, degree_max, screen_height, chamber_height,
-                    time_expand, time_hold, time_pause, repeat):
-        degree_step = ((degree_max - degree_min) / time_expand) / FLAME_PER_SECOND
-        related = (chamber_height * 2 / screen_height) * self.origin_y
 
+    def stimulate(self, degree_min, degree_max, chamber_height, time_expand, time_hold, time_pause, repeat):
+        FLAME_PER_SECOND = 60
+        degree_step = ((degree_max - degree_min) / time_expand) / FLAME_PER_SECOND
+        screen_height = get_screen_height()
+        related = (chamber_height * 2 / screen_height) * self.origin_y
         self.circle = self.canvas.create_oval(
                 self.origin_x - radius(degree_min, related),
                 self.origin_y - radius(degree_min, related),
