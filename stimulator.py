@@ -1,6 +1,7 @@
 from tkinter import *
 from utils import degree_to_radius as radius
 from utils import get_screen_height, get_geometry
+from decimal import Decimal
 import time
 
 
@@ -34,7 +35,7 @@ class Stimulator(Frame):
         for i in range(repeat):
             expand_begin = time.time()
             degree = degree_min
-            while degree <= degree_max:
+            while abs(degree - degree_max) >= 10**(-8) and degree < degree_max:
                 begin = time.time()
                 self.canvas.coords(
                     self.circle, 
@@ -46,7 +47,7 @@ class Stimulator(Frame):
                 self.canvas.update()
                 degree += degree_step
                 time.sleep(
-                    (1 / FLAME_PER_SECOND - time.time() + begin - 0.002) 
+                    (1 / FLAME_PER_SECOND - time.time() + begin) 
                     if time.time() - begin <= 1 / FLAME_PER_SECOND 
                     else 0.0
                 )
