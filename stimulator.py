@@ -1,6 +1,6 @@
 from tkinter import *
 from utils import degree_to_radius as radius
-from utils import get_screen_height, get_geometry
+from utils import get_screen_height, get_stimulator_geometry
 from decimal import Decimal
 import time
 
@@ -10,7 +10,7 @@ class Stimulator(Frame):
         super().__init__(master)
         self.master = master
         self.master.overrideredirect(1)
-        self.master.geometry(get_geometry())
+        self.master.geometry(get_stimulator_geometry())
         self.canvas = Canvas(self.master, bg='white')
         self.canvas.pack(fill = BOTH, expand = True)
         self.canvas.update()

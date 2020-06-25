@@ -1,5 +1,6 @@
 from tkinter import *
 from stimulator import Stimulator
+from utils import get_panel_geometry
 from threading import Thread
 
 
@@ -10,7 +11,7 @@ class Panel(Frame):
         self.stimulator = stimulator
         self.thread = None
         self.master.wm_attributes('-topmost',1)
-        self.master.geometry('300x240')
+        # self.master.geometry(get_panel_geometry())
         ########
         self.degree_min_label = Label(self.master, text="minimal degree(°):")
         self.degree_min_label.grid(row=0)
