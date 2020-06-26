@@ -13,7 +13,7 @@ def get_stimulator_geometry():
     x = monitor.x
     y = monitor.y
     geometry = '{}x{}+{}+{}'.format(width, height, x, y)
-    return geometry
+    return width, height, x, y
 
 
 # def get_panel_geometry():
