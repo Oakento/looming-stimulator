@@ -1,6 +1,5 @@
-from tkinter import *
+from tkinter.ttk import Frame, LabelFrame, Label, Entry, Button
 from stimulator import Stimulator
-# from utils import get_panel_geometry
 from data import get_config_by_config_id, update_config_by_config_id
 from threading import Thread
 
@@ -9,52 +8,83 @@ class Panel(Frame):
     def __init__(self, master, stimulator):
         super().__init__(master)
         self.master = master
+        self.master.title('LS')
         self.stimulator = stimulator
         self.thread = None
         self.master.wm_attributes('-topmost',1)
         # self.master.geometry(get_panel_geometry())
         self.data_lock = True
-        ########
-        self.degree_min_label = Label(self.master, text="minimal degree(°):")
-        self.degree_min_label.grid(row=0)
-        self.degree_min_entry = Entry(self.master)
-        self.degree_min_entry.grid(row=0, column=1)
-        ##
-        self.degree_max_label = Label(self.master, text="maximal degree(°):")
-        self.degree_max_label.grid(row=1)
-        self.degree_max_entry = Entry(self.master)
-        self.degree_max_entry.grid(row=1, column=1)
-        ##  
-        self.chamber_height_label = Label(self.master, text="chamber height(cm):")
-        self.chamber_height_label.grid(row=3)
-        self.chamber_height_entry = Entry(self.master)
-        self.chamber_height_entry.grid(row=3, column=1)
-        ##
-        self.time_expand_label = Label(self.master, text="time expand(s):")
-        self.time_expand_label.grid(row=4)
-        self.time_expand_entry = Entry(self.master)
-        self.time_expand_entry.grid(row=4, column=1)
-        ##
-        self.time_hold_label = Label(self.master, text="time hold(s):")
-        self.time_hold_label.grid(row=5)
-        self.time_hold_entry = Entry(self.master)
-        self.time_hold_entry.grid(row=5, column=1)
-        ##
-        self.time_pause_label = Label(self.master, text="time pause(s):")
-        self.time_pause_label.grid(row=6)
-        self.time_pause_entry = Entry(self.master)
-        self.time_pause_entry.grid(row=6, column=1)
-        ##
-        self.repeat_label = Label(self.master, text="repeat times:")
-        self.repeat_label.grid(row=7)
-        self.repeat_entry = Entry(self.master)
-        self.repeat_entry.grid(row=7, column=1)
-        ###############
-        self.init()
-        self.control()
-        
 
-    def init(self):
+
+        # <right_frame>
+        self.right_frame = Frame(self.master)
+            # <config_frame>
+        self.config_frame = LabelFrame(self.right_frame, text="Settings")
+                # <label_frame>
+        self.label_frame = Frame(self.config_frame)
+                    # </label-1>
+        self.degree_min_label = Label(self.label_frame, text="minimal degree(°):").pack(expand='yes', fill='x')
+                    # </label-2>
+        self.degree_max_label = Label(self.label_frame, text="maximal degree(°):").pack(expand='yes', fill='x')
+        self.chamber_height_label = Label(self.label_frame, text="chamber height(cm):").pack(expand='yes', fill='x')
+        self.time_expand_label = Label(self.label_frame, text="time expand(s):").pack(expand='yes', fill='x')
+        self.time_hold_label = Label(self.label_frame, text="time hold(s):").pack(expand='yes', fill='x')
+        self.time_pause_label = Label(self.label_frame, text="time pause(s):").pack(expand='yes', fill='x')
+        self.repeat_label = Label(self.label_frame, text="repeat times:").pack(expand='yes', fill='x')
+                    # ...
+                    # </label-7>
+        self.label_frame.pack(side='left', expand='yes', fill='y')
+                # </label_frame>
+
+                # <entry_frame>
+        self.entry_frame = Frame(self.config_frame)
+                    # <entry-1>
+        self.degree_min_entry = Entry(self.entry_frame, width=15)
+        self.degree_min_entry.pack(expand='yes', fill='x')
+                    # </entry-1>
+                    # <entry-2>
+        self.degree_max_entry = Entry(self.entry_frame, width=15)
+        self.degree_max_entry.pack(expand='yes', fill='x')
+                    # </entry-2>
+                    # <entry-3>
+        self.chamber_height_entry = Entry(self.entry_frame, width=15)
+        self.chamber_height_entry.pack(expand='yes', fill='x')
+        self.time_expand_entry = Entry(self.entry_frame, width=15)
+        self.time_expand_entry.pack(expand='yes', fill='x')
+        self.time_hold_entry = Entry(self.entry_frame, width=15)
+        self.time_hold_entry.pack(expand='yes', fill='x')
+        self.time_pause_entry = Entry(self.entry_frame, width=15)
+        self.time_pause_entry.pack(expand='yes', fill='x')
+                    # ...
+                    # <entry-7>
+        self.repeat_entry = Entry(self.entry_frame, width=15)
+        self.repeat_entry.pack(expand='yes', fill='x')
+                    # </entry-7>
+        self.entry_frame.pack(side='right', expand='yes', fill='y')
+                # </entry_frame>
+        self.config_frame.pack(side='top', expand='yes', fill='x')
+            # </config_frame>
+            # <button_frame>
+        self.button_frame = Frame(self.right_frame, height=100)
+        self.button_frame.pack_propagate(0)
+                # <edit_button>
+        self.edit_button = Button(self.button_frame, text="EDIT", command=self.edit_params)
+        self.edit_button.pack(side='top', fill='both', expand='yes')
+                # </edit_button>
+                # <stimulate_button>
+        self.stimulate_button = Button(self.button_frame, text="STIMULATE",  command=self.stimulate_thread)
+        self.stimulate_button.pack(side='bottom', fill='both', expand='yes')
+                # </stimulate_button>
+        self.button_frame.pack(side='bottom', expand='yes', fill='x')
+            # </button_frame>
+        self.right_frame.pack(side='right', expand='yes', fill='y')
+        # </right_frame>
+
+        self.init_data()
+        
+        self.master.protocol("WM_DELETE_WINDOW", self.close)
+
+    def init_data(self):
         config = get_config_by_config_id()
         self.degree_min_entry.insert(0, str(config.get("min_degree")))
         self.degree_min_entry.config(state='disabled')
@@ -107,28 +137,18 @@ class Panel(Frame):
     def edit_params(self):
         if self.data_lock:
             self.data_lock = False
-            for child in self.master.winfo_children():
-                if type(child) is Entry:
+            for child in self.entry_frame.winfo_children():
                     child.config(state='normal')
-                if type(child) is Button and child['text'] == 'EDIT':
-                    child.config(text='SAVE')
+            self.edit_button.config(text='SAVE')
         else:
-            for child in self.master.winfo_children():
-                if type(child) is Entry:
+            for child in self.entry_frame.winfo_children():
                     child.config(state='disabled')
                     update_config_by_config_id(
                         self.get_degree_min(), self.get_degree_max(), self.get_chamber_height(), 
                         self.get_time_expand(), self.get_time_hold(), self.get_time_pause(), self.get_repeat()
                     )
-                if type(child) is Button and child['text'] == 'SAVE':
-                    child.config(text='EDIT')
+            self.edit_button.config(text='EDIT')
             self.data_lock = True
-
-
-
-    def close(self):
-        self.stimulator.close()
-        self.master.destroy()
 
 
     def stimulate_thread(self):
@@ -145,15 +165,6 @@ class Panel(Frame):
         stimulate.start()
 
 
-    def control(self):
-        self.quit = Button(self.master, text="QUIT", padx=42, pady=10, command=self.close)
-        self.quit.grid(row=8, column=0)
-
-        self.edit = Button(self.master, text="EDIT", padx=64, pady=10, command=self.edit_params)
-        self.edit.grid(row=8, column=1)
-
-        self.stimulate = Button(self.master, text="STIMULATE", padx=104, pady=10, command=self.stimulate_thread)
-        self.stimulate.grid(row=9, column=0, columnspan=2)
-
-        
-            
+    def close(self):
+        self.stimulator.close()
+        self.master.destroy()

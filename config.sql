@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS "history" (
 );
 CREATE TABLE IF NOT EXISTS "config" (
 	"config_id"	INTEGER,
-	"describe"	TEXT,
+	"description"	TEXT,
 	"min_degree"	NUMERIC,
 	"max_degree"	NUMERIC,
 	"chamber_height"	NUMERIC,
@@ -14,5 +14,5 @@ CREATE TABLE IF NOT EXISTS "config" (
 	"repeat"	INTEGER,
 	PRIMARY KEY("config_id")
 );
-INSERT INTO "config" ("config_id","describe","min_degree","max_degree","chamber_height","time_expand","time_hold","time_pause","repeat") VALUES (1,'',2,20,40,0.25,0.25,0.5,5);
+INSERT INTO "config" ("config_id","description","min_degree","max_degree","chamber_height","time_expand","time_hold","time_pause","repeat") VALUES (1,'',2,20,40,0.25,0.25,0.5,5);
 COMMIT;
