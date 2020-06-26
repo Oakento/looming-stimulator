@@ -1,0 +1,8 @@
+*.bat
+*.exe
+*.db
+*.ico
+build/
+dist/
+venv/
+__pycache__/

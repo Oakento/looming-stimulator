@@ -148,19 +148,14 @@ class Panel(Frame):
                         self.get_time_expand(), self.get_time_hold(), self.get_time_pause(), self.get_repeat()
                     )
             self.edit_button.config(text='EDIT')
+            self.stimulator.init_canvas()
             self.data_lock = True
 
 
     def stimulate_thread(self):
         if self.thread and self.thread.isAlive():
             return
-        stimulate = Thread(
-            target=self.stimulator.stimulate,
-            args=(
-                self.get_degree_min(), self.get_degree_max(), self.get_chamber_height(),
-                self.get_time_expand(), self.get_time_hold(), self.get_time_pause(), self.get_repeat()
-            )
-        )
+        stimulate = Thread(target=self.stimulator.stimulate)
         self.thread = stimulate
         stimulate.start()
 
