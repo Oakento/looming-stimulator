@@ -54,14 +54,12 @@ class Stimulator(Frame):
     def stimulate(self):
         FLAME_PER_SECOND = 60
         self.canvas.itemconfigure(self.circle_list[0], state='normal')
-        self.canvas.update()
         for i in range(self.repeat):
             expand_begin = time.time()
 
             for circle in self.circle_list[1:]:
                 begin = time.time()
                 self.canvas.itemconfigure(circle, state='normal')
-                self.canvas.update()
                 time.sleep(
                     (1 / FLAME_PER_SECOND - time.time() + begin) 
                     if time.time() - begin <= 1 / FLAME_PER_SECOND
@@ -77,7 +75,6 @@ class Stimulator(Frame):
             pause_begin = time.time()
             for circle in self.circle_list[1:]:
                 self.canvas.itemconfigure(circle, state='hidden')
-            self.canvas.update()
 
             time.sleep(
                 (self.time_pause - time.time() + pause_begin) 
